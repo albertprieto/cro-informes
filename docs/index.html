@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRO Informes · Industrial Shields</title>
+<style>
+:root {
+  --brand: #1F4E78;
+  --brand-dark: #163a5e;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --border: #dce3ec;
+  --ink: #1f2d3d;
+  --muted: #60728a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--ink); }
+.hero {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: white; padding: 60px 24px 80px; text-align: center;
+}
+.hero h1 { margin: 0; font-size: 32px; font-weight: 600; }
+.hero p { margin: 8px 0 0; opacity: 0.9; font-size: 16px; }
+.container { max-width: 900px; margin: -40px auto 60px; padding: 0 24px; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 28px; }
+.note { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.note b { color: var(--ink); }
+ul.commercials { list-style: none; padding: 0; margin: 24px 0 0; }
+ul.commercials li {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+  margin-bottom: 10px;
+}
+ul.commercials li.available {
+  background: #f0f7ff; border-color: #c4d8ed;
+}
+ul.commercials li .name { font-weight: 600; }
+ul.commercials li .role { color: var(--muted); font-size: 13px; margin-left: 8px; }
+ul.commercials li a {
+  background: var(--brand); color: white; padding: 6px 14px; border-radius: 6px;
+  text-decoration: none; font-size: 13px; font-weight: 600;
+}
+ul.commercials li.pending span.pending {
+  font-size: 12px; color: var(--muted); font-style: italic;
+}
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>CRO · Informes Comerciales</h1>
+  <p>Industrial Shields · acceso por passphrase semanal</p>
+</div>
+<div class="container">
+  <div class="card">
+    <p class="note">
+      Cada comercial tiene su propio informe con cartera, oportunidades, drafts dormidos, urgencias y diagnóstico CRO. Los informes están cifrados (AES-256-GCM) y solo se descifran con la passphrase semanal enviada por email cada lunes.
+    </p>
+    <ul class="commercials">
+      <li class="available">
+        <div><span class="name">Jordi Hernandez</span><span class="role">JHS · Internacional técnico</span></div>
+        <a href="./jordi/">Abrir informe →</a>
+      </li>
+      <li class="pending">
+        <div><span class="name">Josep Massó</span><span class="role">JMP · España, distribuidores nacionales</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+      <li class="pending">
+        <div><span class="name">Ramon Boncompte</span><span class="role">RBT · Distribuidores internacionales</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+      <li class="pending">
+        <div><span class="name">Gerard Montero</span><span class="role">GMM · Controllino DE/Nórdicos/USA</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+      <li class="pending">
+        <div><span class="name">Eloi Davila</span><span class="role">EDL · Medio ambiente, sector municipal</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+      <li class="pending">
+        <div><span class="name">Garima Arora</span><span class="role">India / Asia</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+      <li class="pending">
+        <div><span class="name">Albert Prieto</span><span class="role">APM · CEO · cartera residual + dashboard global</span></div>
+        <span class="pending">Próximamente</span>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="footer">Generado automáticamente por Cowork · Industrial Shields · CRO platform</div>
+</body>
+</html>
