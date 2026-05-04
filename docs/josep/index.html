@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe CRO Â· Josep Massó Â· Industrial Shields</title>
+<style>
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --border: #dce3ec;
+  --ink: #1f2d3d;
+  --muted: #60728a;
+  --brand: #1F4E78;
+  --brand-dark: #163a5e;
+  --danger: #b03a2e;
+  --warn: #b36a00;
+  --ok: #2e7d32;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; line-height: 1.5; }
+
+/* Login overlay */
+#loginOverlay {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#loginOverlay .card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 32px 28px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+#loginOverlay h1 { margin: 0 0 6px; font-size: 22px; color: var(--brand); }
+#loginOverlay h2 { margin: 0 0 18px; font-size: 14px; font-weight: 500; color: var(--muted); }
+#loginOverlay p { margin: 0 0 20px; font-size: 14px; color: var(--ink); }
+#loginOverlay label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+#loginOverlay input[type="password"] {
+  width: 100%; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.5px;
+  outline: none;
+}
+#loginOverlay input[type="password"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(31,78,120,0.15); }
+#loginOverlay button {
+  margin-top: 16px; width: 100%;
+  padding: 12px 16px; border: none; border-radius: 8px;
+  background: var(--brand); color: white;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+}
+#loginOverlay button:hover:not(:disabled) { background: var(--brand-dark); }
+#loginOverlay button:disabled { opacity: 0.5; cursor: not-allowed; }
+#err { color: var(--danger); font-size: 13px; margin-top: 12px; min-height: 18px; }
+.help { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+.help b { color: var(--ink); }
+
+/* Header bar after unlock */
+#topBar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--brand); color: white;
+  padding: 10px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#topBar .meta { font-size: 13px; opacity: 0.85; }
+#topBar button {
+  background: transparent; color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 12px; border-radius: 6px;
+  font-size: 12px; cursor: pointer;
+}
+#topBar button:hover { background: rgba(255,255,255,0.1); }
+
+/* Report container */
+#reportContainer { padding: 0; }
+#reportContainer.hidden { display: none; }
+
+/* Loading state */
+#loading { display: none; text-align: center; padding: 16px; color: var(--muted); font-size: 13px; }
+
+/* Spinner */
+.spin {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.8s linear infinite; vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="card">
+    <h1>Informe CRO Comercial</h1>
+    <h2>Josep Massó Â· Industrial Shields</h2>
+    <p>Este informe contiene datos confidenciales de cartera, oportunidades y diagnÃ³stico. Introduce la <b>passphrase semanal</b> recibida por email para descifrarlo.</p>
+    <form id="loginForm">
+      <label for="pass">Passphrase semanal</label>
+      <input type="password" id="pass" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="32 caracteres alfanumÃ©ricos">
+      <button type="submit" id="btn">Desbloquear informe</button>
+      <div id="err"></div>
+    </form>
+    <div class="help">
+      <b>Â¿Perdiste la passphrase?</b> Cada lunes a las 7h se genera una nueva y se envÃ­a por email. La anterior queda invalidada.
+      <br><br>
+      <b>Confidencialidad:</b> el HTML estÃ¡ cifrado en el servidor (AES-256-GCM). Solo se descifra en tu navegador con la passphrase correcta.
+    </div>
+  </div>
+</div>
+
+<!-- POST-UNLOCK -->
+<div id="topBar" style="display:none">
+  <div>
+    <strong>Informe CRO Â· Josep Massó</strong>
+    <span class="meta" id="metaSpan"></span>
+  </div>
+  <button id="lockBtn">Bloquear sesiÃ³n</button>
+</div>
+<div id="loading"><span class="spin"></span> Descifrando informeâ¦</div>
+<div id="reportContainer" class="hidden"></div>
+
+<script>
+const SALT_STR = "cro-informes-v1";
+const ITERATIONS = 100000;
+const REPORT_PATH = "data/latest.html.enc";
+const INDEX_PATH = "data/index.json";
+
+const $ = (id) => document.getElementById(id);
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+function b64decode(b64) {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+
+async function deriveKey(passphrase, saltBytes) {
+  const baseKey = await crypto.subtle.importKey(
+    "raw", enc.encode(passphrase), { name: "PBKDF2" }, false, ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: saltBytes, iterations: ITERATIONS, hash: "SHA-256" },
+    baseKey,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+}
+
+async function decryptBlob(blob, passphrase) {
+  const iv = b64decode(blob.iv);
+  const salt = b64decode(blob.salt);
+  const ct = b64decode(blob.ct);
+  const key = await deriveKey(passphrase, salt);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ct);
+  return dec.decode(plain);
+}
+
+async function tryUnlock(passphrase) {
+  const errEl = $("err");
+  const btn = $("btn");
+  errEl.textContent = "";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Descifrandoâ¦';
+  try {
+    const r = await fetch(REPORT_PATH + "?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error("No se ha podido descargar el informe (" + r.status + ")");
+    const blob = await r.json();
+    const html = await decryptBlob(blob, passphrase);
+
+    // Try to also read index.json for week/date metadata (optional)
+    let meta = "";
+    try {
+      const ir = await fetch(INDEX_PATH + "?t=" + Date.now(), { cache: "no-store" });
+      if (ir.ok) {
+        const idx = await ir.json();
+        if (idx && idx.length) {
+          const last = idx[0];
+          meta = " Â· Semana del " + (last.week_start || last.date || "â");
+        }
+      }
+    } catch (e) {}
+
+    // Render
+    $("loginOverlay").style.display = "none";
+    $("topBar").style.display = "flex";
+    $("metaSpan").textContent = meta;
+    $("loading").style.display = "block";
+    setTimeout(() => {
+      injectReport(html);
+      $("loading").style.display = "none";
+      $("reportContainer").classList.remove("hidden");
+    }, 30);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = "Desbloquear informe";
+    if (e.name === "OperationError") {
+      errEl.textContent = "Passphrase incorrecta. Revisa el email de esta semana.";
+    } else {
+      errEl.textContent = "Error: " + e.message;
+    }
+  }
+}
+
+function injectReport(html) {
+  // The encrypted blob contains a full HTML document. Extract <body> and <style>/<head> styles
+  // and inject them into our container, so we don't have to use iframe.
+  const container = $("reportContainer");
+  // Parse the document
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  // Move all <style> tags and <link rel=stylesheet> from <head> into our document head
+  const headEls = doc.head.querySelectorAll("style, link[rel='stylesheet']");
+  headEls.forEach(el => {
+    // Scope styles inside #reportContainer to avoid clashing with our shell styles
+    if (el.tagName === "STYLE") {
+      const scoped = document.createElement("style");
+      scoped.textContent = el.textContent;
+      document.head.appendChild(scoped);
+    } else {
+      document.head.appendChild(el.cloneNode(true));
+    }
+  });
+
+  // Inject body content
+  container.innerHTML = doc.body.innerHTML;
+
+  // Re-execute any inline scripts in the body
+  container.querySelectorAll("script").forEach(oldScript => {
+    const newScript = document.createElement("script");
+    [...oldScript.attributes].forEach(a => newScript.setAttribute(a.name, a.value));
+    newScript.textContent = oldScript.textContent;
+    oldScript.parentNode.replaceChild(newScript, oldScript);
+  });
+
+  // Smooth scroll for anchor links
+  container.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='#']");
+    if (!a) return;
+    const target = document.querySelector(a.getAttribute("href"));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+}
+
+function lockSession() {
+  $("reportContainer").innerHTML = "";
+  $("reportContainer").classList.add("hidden");
+  $("topBar").style.display = "none";
+  $("loginOverlay").style.display = "flex";
+  $("pass").value = "";
+  $("pass").focus();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("loginForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pp = $("pass").value.trim();
+    if (pp.length < 8) { $("err").textContent = "Passphrase demasiado corta."; return; }
+    tryUnlock(pp);
+  });
+  $("lockBtn").addEventListener("click", lockSession);
+  setTimeout(() => $("pass").focus(), 100);
+});
+</script>
+
+</body>
+</html>
