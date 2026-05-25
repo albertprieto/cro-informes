@@ -1,5 +1,12 @@
 [
   {
+    "week_start": "2026-05-25",
+    "date_generated": "2026-05-25",
+    "report_size_bytes": 99199,
+    "blob_size_bytes": 134684,
+    "file": "data/2026-05-25.html.enc"
+  },
+  {
     "week_start": "2026-05-18",
     "date_generated": "2026-05-18",
     "report_size_bytes": 99199,
