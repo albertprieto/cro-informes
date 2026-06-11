@@ -101,15 +101,15 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); fo
   <div class="card">
     <h1>Playbook x2</h1>
     <h2>Plan estratégico · Industrial Shields · Confidencial</h2>
-    <p>Este informe contiene datos confidenciales de cartera, oportunidades y diagnóstico. Introduce la <b>passphrase semanal</b> recibida por email para descifrarlo.</p>
+    <p>Este informe contiene datos confidenciales de cartera, oportunidades y diagnóstico. Introduce la <b>passphrase del dashboard global</b> para descifrarlo.</p>
     <form id="loginForm">
-      <label for="pass">Passphrase semanal</label>
+      <label for="pass">Passphrase</label>
       <input type="password" id="pass" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="32 caracteres alfanuméricos">
       <button type="submit" id="btn">Desbloquear informe</button>
       <div id="err"></div>
     </form>
     <div class="help">
-      <b>¿Perdiste la passphrase?</b> Cada lunes a las 7h se genera una nueva y se envía por email. La anterior queda invalidada.
+      <b>¿Perdiste la passphrase?</b> Es la misma del dashboard CRO global. Pídemela por Cowork.
       <br><br>
       <b>Confidencialidad:</b> el HTML está cifrado en el servidor (AES-256-GCM). Solo se descifra en tu navegador con la passphrase correcta.
     </div>
